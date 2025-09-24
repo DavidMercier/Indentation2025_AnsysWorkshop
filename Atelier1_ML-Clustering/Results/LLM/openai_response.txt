@@ -1,0 +1,152 @@
+Certainly! I will show you how to perform a **clustering analysis** using Python on your data. The goal is to group data points with similar properties (`MODULUS_GPa` and `HARDNESS_GPa`) using KMeans and visualize the clusters in property space as well as on the spatial map.
+
+**Steps in the Script:**
+1. Load the data from CSV.
+2. Select features for clustering (`MODULUS_GPa` and `HARDNESS_GPa`).
+3. Standardize the features.
+4. Apply KMeans clustering (using the elbow method to select K, or a fixed value).
+5. Visualize results in property space and in spatial (X,Y) map.
+
+Below is the complete script; just replace the filename with your actual CSV file.
+
+---
+
+```python
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+from sklearn.preprocessing import StandardScaler
+from sklearn.cluster import KMeans
+from sklearn.metrics import silhouette_score
+
+# ========= 1. Load the data ===========
+
+# If your data is stored in JSON, first save it as 'data.csv', or replace filename accordingly
+filename = "data.csv"
+df = pd.read_csv(filename)
+
+# For demonstration, if you want to load from your JSON string to DataFrame directly:
+# import json
+# data = json.loads('PASTE YOUR JSON HERE')
+# df = pd.DataFrame(data)
+
+# Quick overview
+print(df.head())
+
+# ========= 2. Features Selection ========
+features = ['MODULUS_GPa', 'HARDNESS_GPa']
+X = df[features].values
+
+# ========= 3. Feature Scaling ===========
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+
+# ========= 4. KMeans Clustering ==========
+
+# Elbow / Silhouette method to select K
+max_k = 7
+sse = []
+silhouette = []
+ks = range(2, max_k+1)
+for k in ks:
+    km = KMeans(n_clusters=k, random_state=42, n_init=10)
+    pred = km.fit_predict(X_scaled)
+    sse.append(km.inertia_)
+    silhouette.append(silhouette_score(X_scaled, pred))
+
+# Plot Elbow and Silhouette
+fig,ax = plt.subplots(1,2,figsize=(11,4))
+ax[0].plot(ks, sse, marker='o')
+ax[0].set_title('Elbow Method: SSE vs. k')
+ax[0].set_xlabel("k clusters")
+ax[0].set_ylabel("SSE (Inertia)")
+
+ax[1].plot(ks, silhouette, marker='s')
+ax[1].set_title('Silhouette Score vs. k')
+ax[1].set_xlabel("k clusters")
+ax[1].set_ylabel("Silhouette Score")
+plt.tight_layout()
+plt.show()
+
+# For now, use k=3 (adjust if needed based on elbow/silhouette)
+optimal_k = 3
+kmeans = KMeans(n_clusters=optimal_k, random_state=42, n_init=10)
+clusters = kmeans.fit_predict(X_scaled)
+df['Cluster'] = clusters
+
+# Show cluster means in property space
+print("\nCluster property means:")
+print(df.groupby('Cluster')[features].mean())
+
+# ========== 5. Visualization ==============
+
+# a. Modulus vs Hardness colored by cluster
+plt.figure(figsize=(7,5))
+sns.scatterplot(
+    x='MODULUS_GPa', y='HARDNESS_GPa', 
+    hue='Cluster', data=df, palette='tab10', s=60
+)
+plt.title("Clusters in Property Space")
+plt.xlabel("Modulus (GPa)")
+plt.ylabel("Hardness (GPa)")
+plt.legend(title="Cluster")
+plt.tight_layout()
+plt.show()
+
+# b. Spatial (XY) map, colored by cluster
+plt.figure(figsize=(7,5))
+sns.scatterplot(
+    x='X Position_\u00b5m', y='Y Position_\u00b5m',
+    hue='Cluster', data=df, palette='tab10', s=60
+)
+plt.title("Clusters in XY Spatial Map")
+plt.xlabel("X Position (μm)")
+plt.ylabel("Y Position (μm)")
+plt.gca().set_aspect('equal')
+plt.legend(title="Cluster")
+plt.tight_layout()
+plt.show()
+
+# ========== 6. Cluster Stats Table ==========
+print("\nCluster counts:")
+print(df['Cluster'].value_counts())
+
+print("\nCluster Means (property space):")
+print(df.groupby('Cluster')[features].mean())
+
+# Optionally save result
+# df.to_csv("data_with_clusters.csv", index=False)
+```
+
+---
+
+### **How to Use**
+
+1. **Save your JSON to a CSV:** Since the data above is JSON, save it as `data.csv` with proper column headers, or adapt the code to load from JSON.
+
+2. **Install required packages**:  
+   ```
+   pip install pandas numpy scikit-learn matplotlib seaborn
+   ```
+
+3. **Run the script**.  
+   Adjust `optimal_k` if the plots suggest a different number of clusters yields better silhouette values.
+
+---
+
+### **What this does:**
+- **Property Clustering**: Finds clusters in `MODULUS_GPa` and `HARDNESS_GPa`, groups similar points.
+- **Visualize clusters**:
+    - In (`MODULUS_GPa`, `HARDNESS_GPa`) property space.
+    - On the spatial grid (`X Position`, `Y Position`) to see patterns/distribution.
+- **Lists cluster statistics** for further interpretation.
+
+---
+
+**Tips:**
+- Try also plotting Modulus and Hardness maps as color plots (`plt.scatter(..., c=df['MODULUS_GPa'], ...)`), or cluster-averaged maps.
+- You can expand to DBSCAN for density-based clustering if KMeans does not perform well.
+
+If you need the script to load directly from the JSON string provided rather than a CSV, let me know!

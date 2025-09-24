@@ -1,0 +1,24 @@
+{
+    "Mechanical Property 1 (Hardness)": {
+        "Fiber": {
+            "Mean": 4.500388107229032,
+            "Standard Deviation": 0.7140956150664071
+        },
+        "Matrix": {
+            "Mean": 1.4923224429145379,
+            "Standard Deviation": 0.4974685117819453
+        }
+    },
+    "Mechanical Property 2 (Elastic Modulus)": {
+        "Fiber": {
+            "Mean": 22.4273745769052,
+            "Standard Deviation": 7.039908194772458
+        },
+        "Matrix": {
+            "Mean": 14.909734672332085,
+            "Standard Deviation": 5.005526311394176
+        }
+    },
+    "Ratio of E_Fiber to E_Matrix": 1.5,
+    "Ratio of H_Fiber to H_Matrix": 3
+}

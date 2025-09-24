@@ -1,0 +1,32 @@
+{
+    "General information": {
+        "Test Date": "2018-01-01",
+        "Operator": "D. Mercier",
+        "Partner": "Ansys",
+        "Analysis Date": "2025-05-12",
+        "Analyst": "Ansys"
+    },
+    "Specimen information": {
+        "Grade name": "HSS-Steel_Carbides",
+        "Specimen code": "HSS-Steel_Carbides",
+        "Material Family": "Metals and Alloys"
+    },
+    "Test settings": {
+        "Test equipment ID": "_Example_PartnerName_Type-EquipmentName",
+        "Temperature Test": 25,
+        "Number of Points": 25,
+        "Number of Profiles": 25,
+        "Number of points (X axis)": 193,
+        "Number of points (Y axis)": 193,
+        "Space between points (X axis)": 25.0,
+        "Space between points (Y axis)": 0.0
+    },
+    "Clustering and Mapping": {
+        "ML method used to analyze NI data": [
+            "1D GMM"
+        ],
+        "Method used to determine n_cluster": [
+            "KDE"
+        ]
+    }
+}

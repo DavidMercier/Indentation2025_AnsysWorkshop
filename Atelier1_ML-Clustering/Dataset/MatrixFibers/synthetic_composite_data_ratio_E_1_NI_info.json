@@ -1,0 +1,31 @@
+{
+    "General information": {
+        "Test Date": "2025-04-14",
+        "Operator": "David",
+        "Partner": "Ansys",
+        "Analysis Date": "2025-04-14",
+        "Analyst": "Ansys"
+    },
+    "Specimen information": {
+        "Grade name": "Synthetic data for matrix-fiber composite",
+        "Specimen code": "Ratio_E_1",
+        "Material Family": "Metals and Alloys"
+    },
+    "Test settings": {
+        "Test equipment ID": "NTUA_NI-FTI04",
+        "Temperature Test": 25,
+        "Grid indentation pattern": "Zigzag",
+        "Number of points (X axis)": 100,
+        "Number of points (Y axis)": 100,
+        "Space between points (X axis)": 0.0,
+        "Space between points (Y axis)": 0.0
+    },
+    "Clustering and Mapping": {
+        "ML method used to analyze NI data": [
+            "K-means"
+        ],
+        "Method used to determine n_cluster": [
+            "Elbow method"
+        ]
+    }
+}
