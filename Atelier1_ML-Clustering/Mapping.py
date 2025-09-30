@@ -29,26 +29,65 @@ def plot_pdf_with_deconvolution_on_axis(data, column, n_components, ax):
     ax.legend()
 
 def plot_cdf_with_weibull_fit_on_axis(data, column, ax):
-    # Sort data and compute CDF
+    """
+    Plot the empirical CDF and Weibull mixture fit on the given axis.
+
+    Parameters:
+        data (DataFrame): Input data containing the column to analyze.
+        column (str): Column name to compute the CDF and Weibull mixture fit.
+        ax (matplotlib.axes.Axes): Matplotlib axis to plot on.
+    """
+    import numpy as np
+    from scipy.stats import weibull_min
+    from scipy.optimize import curve_fit
+
+    # Define a Weibull mixture model
+    def weibull_mixture(x, *params):
+        """
+        Compute the CDF of a mixture of Weibull distributions.
+
+        Parameters:
+            x (array-like): Data points.
+            params (list): Parameters for the Weibull mixture. Each component has shape, scale, and weight.
+
+        Returns:
+            array-like: Combined CDF of the Weibull mixture.
+        """
+        n_components = len(params) // 3  # Each component has 3 parameters: shape, scale, and weight
+        cdf = np.zeros_like(x, dtype=float)
+        for i in range(n_components):
+            shape = params[i * 3]
+            scale = params[i * 3 + 1]
+            weight = params[i * 3 + 2]
+            cdf += weight * weibull_min.cdf(x, shape, scale=scale)
+        return cdf
+
+    # Sort data and compute empirical CDF
     sorted_data = np.sort(data[column].dropna())
     cdf = np.arange(1, len(sorted_data) + 1) / len(sorted_data)
-    
+
     # Plot empirical CDF
     ax.step(sorted_data, cdf, where='post', label='Empirical CDF', color='blue')
-    
-    # Fit Weibull distribution
-    from scipy.stats import weibull_min
-    params = weibull_min.fit(sorted_data, floc=0)
+
+    # Fit Weibull mixture model
     x = np.linspace(sorted_data.min(), sorted_data.max(), 1000)
-    weibull_cdf = weibull_min.cdf(x, *params)
-    
-    # Plot Weibull fit
-    ax.plot(x, weibull_cdf, 'r-', label='Weibull Fit')
-    
-    ax.set_title(f'CDF and Weibull Fit of {column}')
+    initial_params = [1.5, 2, 0.5, 3.0, 5, 0.5]  # Initial guesses: [shape1, scale1, weight1, shape2, scale2, weight2]
+    popt, _ = curve_fit(weibull_mixture, sorted_data, cdf, p0=initial_params)
+    weibull_cdf = weibull_mixture(x, *popt)
+
+    # Plot Weibull mixture fit
+    ax.plot(x, weibull_cdf, 'r-', label='Weibull Mixture Fit')
+
+    # Customize plot
+    ax.set_title(f'CDF and Weibull Mixture Fit of {column}')
     ax.set_xlabel(column)
     ax.set_ylabel('CDF')
-    ax.legend() 
+    ax.legend()
+
+    # Print fitted parameters for debugging or analysis
+    n_components = len(popt) // 3
+    for i in range(n_components):
+        print(f"Component {i+1}: Shape={popt[i*3]:.3f}, Scale={popt[i*3+1]:.3f}, Weight={popt[i*3+2]:.3f}")
 
 def plot_clustered_data(data, xdata, ydata, huedata, colors, result_dir, xDim=10, yDim=6, title='KMeans Clustering of Hardness and Modulus', xlabel='Hardness (GPa)', ylabel='Modulus (GPa)'):
     """

@@ -71,32 +71,17 @@ def compute_kam(data, output_folder, order, image_paths=None):
                     kam[i, j] = np.mean(diffs)
 
         # Build DataFrame for output
-        df_kam = pd.DataFrame(kam, index=df_reference.index, columns=df_reference.columns)
+        df_kam = pd.DataFrame(kam, index=df_reference.columns, columns=df_reference.index)
         df_kam.index.name = "Y Position_µm"
         df_kam.columns.name = "X Position_µm"
 
-        # Melt to long format and merge with modulus/hardness values
+        # Melt to long format
         df_kam_long = (
             df_kam
             .reset_index()
             .melt(id_vars="Y Position_µm", var_name="X Position_µm", value_name=name)
             .dropna(subset=[name])
         )
-        df_mod   = data_filtered.pivot_table(index="Y Position_µm", columns="X Position_µm", values="modulus",   aggfunc="mean")
-        df_hard  = data_filtered.pivot_table(index="Y Position_µm", columns="X Position_µm", values="hardness", aggfunc="mean")
-        df_mod_l = df_mod.reset_index().melt(id_vars="Y Position_µm", var_name="X Position_µm", value_name="modulus")
-        df_hard_l= df_hard.reset_index().melt(id_vars="Y Position_µm", var_name="X Position_µm", value_name="hardness")
-
-        df_kam_long = (
-            df_kam_long
-            .merge(df_mod_l,  on=["Y Position_µm","X Position_µm"], how="left")
-            .merge(df_hard_l, on=["Y Position_µm","X Position_µm"], how="left")
-        )
-
-        # Save results CSV
-        csv_path = os.path.join(output_folder, f"{name}_results.csv")
-        df_kam_long.to_csv(csv_path, index=False)
-        print(f"{name} results saved to {csv_path}")
 
         return df_kam_long
     
@@ -111,9 +96,5 @@ def compute_kam(data, output_folder, order, image_paths=None):
     grid_muE = np.nanmean(grid_E)
     grid_muH = np.nanmean(grid_H)
     df_kamm_normProd = compute_kam_metric_diff((grid_E - grid_muE) * (grid_H - grid_muH), df_E, "KAMM_NORMPROD")
-
-    # Adjust layout and show side-by-side heatmaps
-    plt.tight_layout()
-    plt.show()
  
     return df_kamm, df_kaem, df_kapm, df_kamm_ratio, df_kamm_normProd
