@@ -79,10 +79,17 @@ def plot_clustered_data(data, xdata, ydata, huedata, colors, result_dir, xDim=10
     plt.show()
 
 # Function to plot a map with given x, y, z data
-def plot_map(x, y, z, title, xlabel, ylabel, ax, cmap='viridis', save_path=None):
+def plot_map(x, y, z, title, xlabel, ylabel, logScale, ax, cmap='viridis', save_path=None):
+    import numpy as np
+    
     # Filter out non-finite values
     mask = np.isfinite(x) & np.isfinite(y) & np.isfinite(z)
     x, y, z = x[mask], y[mask], z[mask]
+    
+    # Apply logarithmic scale if logScale is True
+    if logScale:
+        z = np.log10(z)
+        title += " (Log Scale)"  # Update the title to indicate log scale
     
     # Use the provided axis for plotting
     contour = ax.tricontourf(x, y, z, levels=14, cmap=cmap)
@@ -91,7 +98,9 @@ def plot_map(x, y, z, title, xlabel, ylabel, ax, cmap='viridis', save_path=None)
     ax.set_title(title)
     ax.set_xlabel(xlabel)
     ax.set_ylabel(ylabel)
-    
+    # Set the axis aspect ratio to 'equal' for a square plot
+    ax.set_aspect('equal')
+
     # Save the figure if a save path is provided
     if save_path:
         plt.savefig(save_path)
@@ -117,6 +126,9 @@ def plot_pixel_map(x, y, z, title, xlabel, ylabel, xDim, yDim, cluster_colors, s
     plt.title(title)
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
+    # Square size
+
+
     
     # Add a legend for clusters
     handles = [plt.Line2D([0], [0], marker='s', color=color, linestyle='', markersize=10, label=f'Cluster {cluster}')
