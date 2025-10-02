@@ -1,2 +1,5 @@
-# Ignore all FE files under Atelier2_CPFEM-NI\1_CPFEM-SX-NI\TiAlloy_TestE06_1um
+# Ignore all files in the Results folder under Atelier1_ML-Clustering
+Atelier1_ML-Clustering/Results/*
+
+# Ignore all files in the Results folder under Atelier2_CPFEM-NI
 Atelier2_CPFEM-NI/1_CPFEM-SX-NI/TiAlloy_TestE06_1um/*

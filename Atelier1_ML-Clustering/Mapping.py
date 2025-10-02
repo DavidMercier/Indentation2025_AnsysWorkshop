@@ -105,6 +105,9 @@ def plot_clustered_data(data, xdata, ydata, huedata, colors, result_dir, xDim=10
     - yDim: int, optional
         The height of the figure (default is 6).
     """
+    if colors is None:
+        colors = sns.color_palette("hsv", len(data[huedata].unique()))
+
     # Plot clustered data
     plt.figure(figsize=(xDim, yDim))
     sns.scatterplot(x=xdata, y=ydata, hue=huedata, palette=colors, data=data)
@@ -147,6 +150,9 @@ def plot_map(x, y, z, title, xlabel, ylabel, logScale, ax, cmap='viridis', save_
 
 # Function to create a grid and plot square pixels
 def plot_pixel_map(x, y, z, title, xlabel, ylabel, xDim, yDim, cluster_colors, save_path=None):
+    if cluster_colors is None:
+        cluster_colors = sns.color_palette("hsv", len(np.unique(z)))
+
     # Create a pivot table to structure data into a grid
     grid_data = pd.DataFrame({'X': x, 'Y': y, 'Cluster': z})
     pivot = grid_data.pivot(index='Y', columns='X', values='Cluster')
@@ -167,8 +173,6 @@ def plot_pixel_map(x, y, z, title, xlabel, ylabel, xDim, yDim, cluster_colors, s
     plt.ylabel(ylabel)
     # Square size
 
-
-    
     # Add a legend for clusters
     handles = [plt.Line2D([0], [0], marker='s', color=color, linestyle='', markersize=10, label=f'Cluster {cluster}')
                for cluster, color in zip(unique_clusters, cluster_cmap)]
