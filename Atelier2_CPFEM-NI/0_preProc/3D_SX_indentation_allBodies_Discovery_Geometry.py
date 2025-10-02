@@ -38,7 +38,7 @@ unitCellFlag = True
 DiscoFlag = True
 
 # For Mechanical Simulation
-mergeFlag = False
+mergeFlag = True
 shareTopoFlag = True
 unitCellFlag = False
 DiscoFlag = False
@@ -46,16 +46,7 @@ DiscoFlag = False
 #+++++++++++++++++++++++++++++++++++++++++++++
 # MATERIALS DEFINITION
 #+++++++++++++++++++++++++++++++++++++++++++++
-# Cu SX indentation - Cacket Large indent
-tipRadiusVal = 27 # Radius of the indenter tip in microns
-MaterialSX = 'Cu'
-cubicCell = True
-# Cu SX indentation - Cacket small indent
-tipRadiusVal = 7.4 # Radius of the indenter tip in microns
-MaterialSX = 'Cu'
-cubicCell = True
 # Ti alloy
-tipRadiusVal = 1.0 # Radius of the indenter tip in microns
 MaterialSX = 'TiAlloy'
 cubicCell = False
 
@@ -68,6 +59,7 @@ scaleFactor = 1e3
 tipFactor = 5 # Factor to scale the sample dimensions with respect to the indenter tip radius
 
 # Indenter tip parameters
+tipRadiusVal = 1.4 # Radius of the indenter tip in microns
 tipRadius = tipRadiusVal/scaleFactor # Radius of the indenter tip in micron
 coneAngle = 120 # Cone angle of the indenter tip in degrees
 h_trans = tipRadius*(1-(math.sin(math.radians(coneAngle/2))))
@@ -100,7 +92,7 @@ MaterialIndenter = "Diamond (carbon)"
 #+++++++++++++++++++++++++++++++++++++++++++++
 # OUTPUT FILE PATH
 #+++++++++++++++++++++++++++++++++++++++++++++
-outputPath = r"C:\SX_indentationModellig\{}_SX_indentation\SXgeom_Rtip_{}_tipFactor{}.dsco".format(MaterialSX, tipRadiusVal, tipFactor)
+outputPath = r"{}_SX_indentation\SXgeom_Rtip_{}_tipFactor{}.dsco".format(MaterialSX, tipRadiusVal, tipFactor)
 
 #+++++++++++++++++++++++++++++++++++++++++++++
 # SAMPLE GEOMETRY
