@@ -1,0 +1,24 @@
+# Jupyter notebooks
+jupyter
+ipykernel
+
+# Data analysis and visualization
+numpy
+pandas
+matplotlib
+seaborn
+scipy
+scikit-learn
+kneed
+
+# Excel input support (.xlsx and .xls)
+openpyxl
+xlrd
+
+# Optional LLM clustering notebook (Azure OpenAI)
+openai
+
+# External software required for Atelier2_CPFEM-NI (install separately; not available via pip):
+# - Ansys Discovery V251 for the Discovery geometry script and SpaceClaim.Api.V251.
+# - Ansys Workbench/Mechanical with the Mechanical APDL solver for CPFEM/UMAT simulations.
+# These Ansys products require appropriate licenses. The Python environment does not install them.
